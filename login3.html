@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GigNest</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #141414;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      h1 {
+        color: #00b894;
+        margin-bottom: 20px;
+      }
+      .input-group {
+        margin-bottom: 15px;
+        width: 300px;
+        text-align: left;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+      }
+      button {
+        background-color: #00b894;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #636363;
+      }
+      .switch-form {
+        margin-top: 15px;
+        font-size: 14px;
+        color: white;
+      }
+      .switch-form a {
+        color: #636363;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .error-message {
+        color: darkred;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      .logo {
+        width: 300px;
+      }
+      .login-container {
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <center>
+      <img class="logo" src="WhatsApp_Image_2025-07-30_at_19.53.44_4668298c-removebg-preview.png" alt="">
+      </center>
+      <div id="login-form">
+        <div class="input-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="Enter your email" />
+        </div>
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <button onclick="login()">Login</button>
+        <div class="switch-form">
+          Don't have an account? <a onclick="showRegister()">Register</a>
+        </div>
+        <div id="login-error" class="error-message"></div>
+      </div>
+      <div id="register-form" style="display: none">
+        <div class="input-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" placeholder="Enter your email" />
+        </div>
+        <div class="input-group">
+          <label for="reg-password">Password</label>
+          <input
+            type="password"
+            id="reg-password"
+            placeholder="Choose a password (min 6 chars)"
+          />
+        </div>
+        <div class="input-group">
+          <label for="reg-phone">Phone Number</label>
+          <input
+            type="text"
+            id="reg-phone"
+            placeholder="Enter your phone number"
+          />
+        </div>
+        <button onclick="register()">Register</button>
+        <div class="switch-form">
+          Already have an account? <a onclick="showLogin()">Login</a>
+        </div>
+        <div id="register-error" class="error-message"></div>
+      </div>
+    </div>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDavL0RmMLSDvwwdEzHwuRx8LEA7u-Rk3M",
+        authDomain: "project-lvl3.firebaseapp.com",
+        projectId: "project-lvl3",
+        storageBucket: "project-lvl3.appspot.com",
+        messagingSenderId: "202554438946",
+        appId: "1:202554438946:web:dca6ebd6d5b683fe45e17b",
+        measurementId: "G-HLMM73VTVY",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      function showRegister() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("register-form").style.display = "block";
+        document.getElementById("register-error").textContent = "";
+      }
+
+      function showLogin() {
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("login-error").textContent = "";
+      }
+
+      async function register() {
+        const email = document.getElementById("reg-email").value.trim();
+        const password = document.getElementById("reg-password").value.trim();
+        const phone = document.getElementById("reg-phone").value.trim();
+
+        if (!email || !password || !phone) {
+          document.getElementById("register-error").textContent =
+            "Please fill in all fields";
+          return;
+        }
+
+        if (password.length < 6) {
+          document.getElementById("register-error").textContent =
+            "Password must be at least 6 characters";
+          return;
+        }
+
+        try {
+          const userCredential = await auth.createUserWithEmailAndPassword(
+            email,
+            password
+          );
+          await db.collection("users").doc(userCredential.user.uid).set({
+            email: email,
+            phone: phone,
+          });
+          alert("Registration successful! Please login.");
+          showLogin();
+          document.getElementById("reg-email").value = "";
+          document.getElementById("reg-password").value = "";
+          document.getElementById("reg-phone").value = "";
+        } catch (error) {
+          document.getElementById("register-error").textContent = error.message;
+        }
+      }
+
+      function login() {
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value.trim();
+
+        if (!email || !password) {
+          document.getElementById("login-error").textContent =
+            "Please enter email and password";
+          return;
+        }
+
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then(() => {
+            window.location.href = "web.html";
+          })
+          .catch((error) => {
+            document.getElementById("login-error").textContent = error.message;
+          });
+      }
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          window.location.href = "web.html";
+        }
+      });
+    </script>
+  </body>
+</html>

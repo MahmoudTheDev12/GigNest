@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Panda Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="login2.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  </head>
+  <body>
+    <div class="panda">
+      <div class="container">
+        <label>Email:</label>
+        <input type="email" id="email" placeholder="Your Email here..." />
+        <label>Password:</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Your Password here..."
+        />
+        <button onclick="login()" class="login-panda">Login</button>
+        <div id="login-error" class="error-message"></div>
+
+        <!-- Panda Character -->
+        <div class="p-head">
+          <div class="p-eye eye-l">
+            <div class="circle-eye"></div>
+            <div class="blush-l blush"></div>
+          </div>
+          <div class="p-eye eye-r">
+            <div class="circle-eye"></div>
+            <div class="blush-r blush"></div>
+          </div>
+          <div class="nose">
+            <div class="nose-r"></div>
+            <div class="nose-l"></div>
+          </div>
+        </div>
+        <div class="p-ear e-l"></div>
+        <div class="p-ear e-r"></div>
+        <div class="hand-l"></div>
+        <div class="hand-r"></div>
+        <div class="leg-l">
+          <div class="bullets">
+            <div class="active"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+          </div>
+          <div class="palm"></div>
+        </div>
+        <div class="leg-r">
+          <div class="bullets">
+            <div class="active"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+          </div>
+          <div class="palm"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDavL0RmMLSDvwwdEzHwuRx8LEA7u-Rk3M",
+        authDomain: "project-lvl3.firebaseapp.com",
+        projectId: "project-lvl3",
+        storageBucket: "project-lvl3.appspot.com",
+        messagingSenderId: "202554438946",
+        appId: "1:202554438946:web:dca6ebd6d5b683fe45e17b",
+        measurementId: "G-HLMM73VTVY",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      function login() {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!email || !password) {
+          document.getElementById("login-error").textContent =
+            "Please enter email and password";
+          return;
+        }
+
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then(() => {
+            window.location.href = "web.html";
+          })
+          .catch((error) => {
+            document.getElementById("login-error").textContent =
+              error.message;
+          });
+      }
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          window.location.href = "web.html";
+        }
+      });
+    </script>
+  </body>
+</html>

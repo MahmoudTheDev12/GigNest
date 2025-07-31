@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GigNest</title>
+    <link rel="stylesheet" href="Style.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div>
+      <h3>Categories</h3>
+      <div class="sidebar-buttons">
+               <button class="sidebar-btn" onclick="navigateTo('Graphic')">Graphic Designer</button>
+        <button class="sidebar-btn" onclick="navigateTo('Video')">Video Editor</button>
+        <button class="sidebar-btn" onclick="navigateTo('web')">Web Developer</button>
+        <button class="sidebar-btn" onclick="navigateTo('Content')">Content Writting</button>
+        <button class="sidebar-btn" onclick="navigateTo('Marketer')">Marketing</button>
+        <button class="sidebar-btn" onclick="navigateTo('builder')">Building</button>
+        <button class="sidebar-btn" onclick="navigateTo('animator')">Animation</button>
+        <button class="sidebar-btn" onclick="navigateTo('Security')">Cyber Security</button>
+        <button class="sidebar-btn" onclick="navigateTo('sfx')">SFX</button>
+        <button class="sidebar-btn" onclick="navigateTo('interface')">interface</button>
+        <button class="sidebar-btn" onclick="navigateTo('programmer')">programmer</button>
+      </div>
+    </div>
+  <img class="logo" src="WhatsApp_Image_2025-07-30_at_19.53.44_4668298c-removebg-preview.png" alt="">
+    <div class="logo-container">
+      <div class="user-info">Email: <span id="user-email"></span></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="welcome">Welcome to GigNest</div>
+    </div>
+    <button class="inbox-btn" onclick="window.location.href='inbox.html'">Inbox</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="posts-container"></div>
+    <button class="create-btn" onclick="openModal()">Create New Gig</button>
+  </div>
+
+  <!-- Create Gig Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <h2>Create Gig</h2>
+      <input type="text" id="project-title" placeholder="Project Title" />
+      <textarea
+        id="project-desc"
+        rows="4"
+        placeholder="Project Description"
+      ></textarea>
+      <div id="ai-feedback" class="ai-feedback" style="display: none;"></div>
+      <div id="ai-loading" class="ai-loading">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <button onclick="validateAndSubmit()">Submit</button>
+    </div>
+  </div>
+
+  <!-- Update Gig Modal -->
+  <div class="modal" id="update-modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeUpdateModal()">&times;</span>
+      <h2>Update Gig</h2>
+      <textarea id="update-content" rows="4"></textarea>
+      <button onclick="submitUpdate()">Update</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDavL0RmMLSDvwwdEzHwuRx8LEA7u-Rk3M",
+      authDomain: "project-lvl3.firebaseapp.com",
+      projectId: "project-lvl3",
+      storageBucket: "project-lvl3.appspot.com",
+      messagingSenderId: "202554438946",
+      appId: "1:202554438946:web:dca6ebd6d5b683fe45e17b",
+      measurementId: "G-HLMM73VTVY",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const BAD_WORDS = [
+      'fuck', 'shit', 'asshole', 'bitch', 'damn', 'crap', 'dick', 'piss', 'cock', 'pussy',
+      'whore', 'slut', 'bastard', 'motherfucker', 'cunt', 'fag', 'nigger', 'kike', 'spic',
+      'chink', 'retard', 'faggot', 'sex', 'stupid', 'hell', 'jerk', 'moron', 'prick', 'twat',
+      'scumbag', 'slutty', 'skank', 'hoe', 'ballsack', 'nutsack', 'dildo', 'boner', 'shithead',
+      'tits', 'boobs', 'titties', 'anal', 'blowjob', 'handjob', 'penis', 'vagina', 'suck',
+      'screwed', 'gay', 'lesbian', 'dyke', 'rape', 'molest', 'pedophile', 'incest', 'orgy',
+      'porn', 'cum', 'jizz', 'masturbate', 'ejaculate', 'nude', 'naked', 'butt', 'booty',
+      'arse', 'arsehole', 'balls', 'banging', 'bang', 'slutbag', 'shitface', 'cockface',
+      'shitfaced', 'motherfucking', 'fucker', 'fucking', 'shitty', 'goddamn', 'goddammit',
+      'dumbass', 'butthead', 'nutjob', 'kill', 'murder', 'terrorist', 'bomb', 'suicide',
+      'racist', 'nazis', 'hitler', 'kkk', 'islamophobic', 'misogynist', 'homophobic',
+      'neanderthal', 'scat', 'bestiality', 'zoophilia', 'necrophilia'
+    ];
+
+    const WEB_DEV_KEYWORDS = [
+      'video editor', 'editing', 'video editing', 'videographer',
+      'film editing', 'post-production', 'premiere pro', 'after effects',
+      'final cut', 'davinci resolve', 'video cut', 'color grading',
+      'transitions', 'motion graphics', 'video effects', 'video montage',
+      'youtube editor', 'reels', 'shorts', 'trailer', 'vfx',
+      'captioning', 'video sound', 'b-roll', 'cinematic editing'
+    ];
+
+    let currentUserEmail = "";
+    let currentUpdatePostId = "";
+    let globalMessageListener = null;
+
+    function navigateTo(category) {
+      window.location.href = `${category.toLowerCase()}.html`;
+    }
+
+    function openInboxWithRecipient(recipient) {
+      sessionStorage.setItem('preloadRecipient', recipient);
+      window.location.href = 'inbox.html';
+    }
+
+    function markMessagesAsRead(conversationId) {
+      db.collection("messages")
+        .where("conversationId", "==", conversationId)
+        .where("recipient", "==", currentUserEmail)
+        .where("read", "==", false)
+        .get()
+        .then((snapshot) => {
+          const batch = db.batch();
+          snapshot.forEach(doc => {
+            batch.update(doc.ref, { read: true });
+          });
+          return batch.commit();
+        });
+    }
+
+    function checkUnreadMessages() {
+      db.collection("inbox")
+        .where("user1", "==", currentUserEmail)
+        .where("read", "==", false)
+        .onSnapshot((snapshot) => {
+          const inboxBtn = document.querySelector('.inbox-btn');
+          if (!snapshot.empty) {
+            inboxBtn.classList.add('unread');
+          } else {
+            inboxBtn.classList.remove('unread');
+          }
+        });
+    }
+
+    function showNewMessageNotification(sender) {
+      const notification = document.createElement('div');
+      notification.className = 'message-notification';
+      notification.innerHTML = `
+        New message from ${sender}
+        <button onclick="window.location.href='inbox.html'">View</button>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 5000);
+    }
+
+    function setupGlobalMessageListener() {
+      globalMessageListener = db.collection("messages")
+        .where("recipient", "==", currentUserEmail)
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+              if (window.location.pathname.includes('inbox.html')) {
+                loadConversations();
+              }
+              else {
+                showNewMessageNotification(change.doc.data().sender);
+              }
+            }
+          });
+        });
+    }
+
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        currentUserEmail = user.email;
+        document.getElementById("user-email").textContent = user.email;
+        loadPosts();
+        checkUnreadMessages();
+        setupGlobalMessageListener();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    function loadPosts() {
+      db.collection("editor")
+        .orderBy("timestamp", "desc")
+        .onSnapshot((snapshot) => {
+          const postsContainer = document.getElementById("posts-container");
+          postsContainer.innerHTML = "";
+
+          snapshot.forEach((doc) => {
+            const post = doc.data();
+            const [title, ...descParts] = post.content.split(":");
+            const desc = descParts.join(":").trim();
+
+            const postElement = document.createElement("div");
+            postElement.className = "post";
+
+            let actionsHTML = "";
+            if (post.userEmail === currentUserEmail) {
+              actionsHTML = `
+                <div class="actions">
+                  <button class="delete-btn" onclick="deletePost('${doc.id}')">Delete</button>
+                  <button class="edit-btn" onclick="openUpdateModal('${doc.id}', \`${post.content.replace(/`/g, "\\`")}\`)">Update</button>
+                </div>
+              `;
+            } else {
+              actionsHTML = `
+                <div class="actions">
+                  <button class="message-btn" onclick="openInboxWithRecipient('${post.userEmail}')">Message</button>
+                </div>
+              `;
+            }
+
+            postElement.innerHTML = `
+              <p><strong>${post.userEmail}</strong></p>
+              <div class="post-title">${title}</div>
+              <div class="post-desc">${desc}</div>
+              ${actionsHTML}
+            `;
+            postsContainer.appendChild(postElement);
+          });
+        });
+    }
+
+    function openModal() {
+      document.getElementById("modal").style.display = "flex";
+      document.getElementById("ai-feedback").style.display = "none";
+      document.getElementById("project-title").value = "";
+      document.getElementById("project-desc").value = "";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    async function validateAndSubmit() {
+      const title = document.getElementById("project-title").value.trim();
+      const desc = document.getElementById("project-desc").value.trim();
+
+      if (!title || !desc) {
+        showFeedback("Please fill in all fields", false);
+        return;
+      }
+
+      const fullText = `${title} ${desc}`.toLowerCase();
+      
+      document.getElementById("ai-loading").style.display = "block";
+      document.getElementById("ai-feedback").style.display = "none";
+      
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      try {
+        const isWebDevJob = WEB_DEV_KEYWORDS.some(keyword => fullText.includes(keyword));
+        
+        const containsBadWords = BAD_WORDS.some(word => fullText.includes(word));
+        
+        if (!isWebDevJob) {
+          showFeedback("⚠️ This doesn't appear to be for hiring a web developer/scriptwriter. Please make sure you're posting in the correct category.", false);
+          return;
+        }
+        
+        if (containsBadWords) {
+          showFeedback("❌ Your post contains inappropriate language. Please remove any offensive words before posting.", false);
+          return;
+        }
+        
+        await submitProject();
+          
+      } catch (error) {
+        console.error("Validation Error:", error);
+        showFeedback("Validation failed. Please try again.", false);
+      } finally {
+        document.getElementById("ai-loading").style.display = "none";
+      }
+    }
+
+    function showFeedback(message, isSuccess) {
+      const feedbackElement = document.getElementById("ai-feedback");
+      feedbackElement.innerHTML = message;
+      feedbackElement.className = isSuccess ? 'ai-approved' : 'ai-rejected';
+      feedbackElement.style.display = "block";
+    }
+
+    async function submitProject() {
+      const title = document.getElementById("project-title").value.trim();
+      const desc = document.getElementById("project-desc").value.trim();
+
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const postContent = `${title}: ${desc}`;
+
+      await db.collection("editor").add({
+        content: postContent,
+        userEmail: user.email,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      showFeedback("✅ Post submitted successfully!", true);
+      setTimeout(closeModal, 1500);
+    }
+
+    async function deletePost(postId) {
+      await db.collection("editor").doc(postId).delete();
+    }
+
+    function openUpdateModal(postId, content) {
+      currentUpdatePostId = postId;
+      document.getElementById("update-content").value = content;
+      document.getElementById("update-modal").style.display = "flex";
+    }
+
+    function closeUpdateModal() {
+      document.getElementById("update-modal").style.display = "none";
+    }
+
+    async function submitUpdate() {
+      const newContent = document.getElementById("update-content").value.trim();
+      if (!newContent) return;
+      await db.collection("editor").doc(currentUpdatePostId).update({
+        content: newContent,
+      });
+      closeUpdateModal();
+    }
+
+    function logout() {
+      if (globalMessageListener) globalMessageListener();
+      auth.signOut().then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  </script>
+</body>
+</html>

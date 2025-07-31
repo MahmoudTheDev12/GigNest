@@ -1,0 +1,375 @@
+body {
+    font-family: 'Poppins';
+    background-color: #131313;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    border-radius: 10px;
+    font-weight: bold;
+    background-color: white;
+    padding: 30px;
+    width: 250px;
+    scale: 1.1;
+    height: 250px;
+    font-size: 14px;
+}
+
+.container input {
+    border: none;
+    outline: none;
+    align-self: center;
+    margin-bottom: 15px;
+    border-bottom: black solid 1px;
+    transition: 0.3s;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.container input:focus {
+    border-bottom: #019175 solid 1px;
+}
+
+.container label {
+    margin-bottom: 20px;
+}
+
+
+.container a {
+    position: absolute;
+    text-decoration: none;
+    color: black;
+    text-transform: uppercase;
+    background-color: #019175;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    border-radius: 10px;
+    left: 50%;
+    translate: -50%;
+    bottom: 25px;
+    transition: 0.3s;
+}
+
+.container a:hover {
+    opacity: 0.7;
+}
+
+/* Start Panda */
+
+.p-head {
+    position: absolute;
+    left: 50%;
+    top: -50px;
+    translate: -50%;
+    width: 90px;
+    height: 80px;
+    border: solid black 2px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 40%;
+    border-bottom-left-radius: 40%;
+    background-color: white;
+    
+}
+
+.p-ear {
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    background-color: black;
+    position: absolute;
+
+}
+
+.e-l {
+    transform: rotate(-35deg);
+    z-index: -2;
+    left: 100px;
+    top: -50px;
+}
+
+.e-r {
+    transform: rotate(35deg);
+    z-index: -2;
+    left: 180px;
+    top: -50px;
+}
+
+.p-eye {
+    width: 23px;
+    position: absolute;
+    height: 24px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    background-color: black;
+}
+
+.eye-l {
+    top: 45%;
+    left: 30%;
+    translate: -50% -50%;
+    rotate: -35deg;
+}
+
+.eye-r {
+    top: 45%;
+    left: 70%;
+    translate: -50% -50%;
+    rotate: 35deg;
+}
+
+.circle-eye {
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+
+.blush {
+    background-color: #ff8bb1;
+    width: 20px;
+    height: 15px;
+    border-radius: 50%;
+    position: absolute;
+
+}
+
+.blush-l {
+    top: 18.2px;
+    left: -5px;
+    rotate: -120deg;
+    translate: -50% -50%;
+
+}
+
+.blush-r {
+    top: 18px;
+    left: 30px;
+    rotate: 120deg;
+    translate: -50% -50%;
+
+}
+
+.nose {
+    border-top: 10px solid black;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+    width: 2px;
+    height: 2px;
+    position: absolute;
+    top: 75%;
+    border-radius: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+.nose::after {
+    content: "";
+    position: absolute;
+    height: 6px;
+    width: 2px;
+    background-color: black;
+}
+
+.nose-r {
+    width: 15px;
+    height: 10px;
+    position: absolute;
+    top: -5px;
+    left: -2px;
+    border-radius: 50%;
+    border-bottom: 2px solid black;
+    border-top: 2px solid transparent;
+    border-right: 2px solid transparent;
+    border-left: 2px solid transparent;
+}
+
+.nose-l {
+    width: 15px;
+    height: 10px;
+    position: absolute;
+    top: -5px;
+    left: -14px;
+    border-radius: 50%;
+    border-bottom: 2px solid black;
+    border-top: 2px solid transparent;
+    border-right: 2px solid transparent;
+    border-left: 2px solid transparent;
+}
+
+
+.hand-l {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: 30px;
+    height: 33px;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    background-color: black;
+    position: absolute;
+    top: -10px;
+    left: 55px;
+    transition: 0.6s;
+}
+
+
+.hand-r {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: 30px;
+    height: 33px;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    background-color: black;
+    position: absolute;
+    top: -10px;
+    right: 55px;
+    transition: 0.6s;
+}
+
+.leg-l {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    width: 35px;
+    height: 38px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    background-color: black;
+    position: absolute;
+    bottom: -20px;
+    left: 100px;
+    rotate: 0deg;
+}
+
+
+.leg-r {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    width: 35px;
+    height: 38px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    background-color: black;
+    position: absolute;
+    bottom: -20px;
+    right: 100px;
+    rotate: 0deg;
+}
+
+.palm {
+    position: absolute;
+    background-color: white;
+    top: 57%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 23px; 
+    height: 20px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+
+.bullets div:nth-child(1) {
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 1;
+    border-radius: 50%;
+    background-color: white;
+}
+
+
+.bullets div:nth-child(2) {
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    top: 25%;
+    left: 23%;
+    translate: -50% -50%;
+    z-index: 1;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.bullets div:nth-child(3) {
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    top: 25%;
+    left: 77%;
+    translate: -50% -50%;
+    z-index: 1;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.container:has(input[type="password"]:focus) {
+    .hand-l {
+        left: 100px;
+        top: -35px;
+        rotate: -130deg;
+    }
+
+    .hand-r {
+        right: 100px;
+        top: -35px;
+        rotate: 130deg;
+    }
+
+    .hand-r , .hand-l {
+        height: 80px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .leg-r , .leg-l {
+        animation: mymove 2s infinite alternate;
+    }
+}
+
+@keyframes mymove {
+    0% {
+        rotate: 0deg;
+    }
+
+    50% {
+        rotate: 45deg
+    }
+
+    100% {
+        rotate: -45deg;
+    }
+
+  }
+  
+
+  .login-panda {
+    background-color: #019175;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    
+  }
